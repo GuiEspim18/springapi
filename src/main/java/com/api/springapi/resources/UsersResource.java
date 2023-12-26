@@ -4,6 +4,7 @@ import com.api.springapi.exceptions.NotFoundUserException;
 import com.api.springapi.exceptions.UserAlreadyExistsException;
 import com.api.springapi.models.Users;
 import com.api.springapi.repository.UsersRepository;
+import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +16,6 @@ import org.slf4j.LoggerFactory;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 
 @RestController
 @RequestMapping(value="/users")
@@ -53,6 +53,9 @@ public class UsersResource {
         try {
             final Users users = usersRepository.findByEmail(data.getEmail());
             if (users == null) {
+                String pw = data.getPassword();
+                String hash = BCrypt.hashpw(pw, BCrypt.gensalt());
+                data.setPassword(hash);
                 usersRepository.save(data);
                 return ResponseEntity.ok(data);
             }
