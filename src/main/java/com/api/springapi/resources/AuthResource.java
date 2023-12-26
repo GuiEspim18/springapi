@@ -32,7 +32,6 @@ public class AuthResource {
     public ResponseEntity<?> login(@RequestBody Users data) {
         try {
             final Users found = usersRepository.findByEmail(data.getEmail());
-            System.out.println(data.getEmail());
             if (found == null) {
                 throw new NotFoundUserException();
             }
