@@ -2,11 +2,14 @@ package com.api.springapi.models;
 
 import jakarta.persistence.*;
 
+import java.text.MessageFormat;
+
 @Entity
+@SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", allocationSize = 1)
 public class Users {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
     private long id;
 
     private String name;
@@ -45,5 +48,12 @@ public class Users {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @Override
+    public String toString () {
+        return "Users { name: \"" + name +
+                "\", email: \"" + email +
+                "\", password: \"" + password + "\" }";
     }
 }
