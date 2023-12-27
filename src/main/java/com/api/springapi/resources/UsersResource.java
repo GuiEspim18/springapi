@@ -4,6 +4,7 @@ import com.api.springapi.exceptions.NotFoundUserException;
 import com.api.springapi.exceptions.UserAlreadyExistsException;
 import com.api.springapi.models.Users;
 import com.api.springapi.repository.UsersRepository;
+import com.api.springapi.utils.Responses;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,11 +28,13 @@ public class UsersResource {
     UsersRepository usersRepository;
 
     @GetMapping
-    public List<Users> get() throws Exception {
+    public ResponseEntity<?> get() {
         try {
-            return usersRepository.findAll();
+            final List<Users> found = usersRepository.findAll();
+            return ResponseEntity.ok(found);
         } catch (Exception e) {
-            throw new Exception();
+            logger.error("User not found", e);
+            return Responses.exception(e);
         }
     }
 
@@ -42,36 +45,29 @@ public class UsersResource {
             return ResponseEntity.ok(users);
         } catch (NotFoundUserException e) {
             logger.error("User not found", e);
-            Map<String, String> body = new HashMap<>();
-            body.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+            return Responses.exception(e);
         }
     }
 
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Users data) {
         try {
-            final Users users = usersRepository.findByEmail(data.getEmail());
+            final Users users = usersRepository.findByEmail(data.email);
             if (users == null) {
-                String pw = data.getPassword();
-                String hash = BCrypt.hashpw(pw, BCrypt.gensalt());
-                data.setPassword(hash);
                 usersRepository.save(data);
                 return ResponseEntity.ok(data);
             }
             throw new UserAlreadyExistsException();
         } catch (UserAlreadyExistsException e) {
             logger.error("User already exists", e);
-            Map<String, String> body = new HashMap<>();
-            body.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+            return Responses.exception(e);
         }
     }
 
     @PutMapping
     public ResponseEntity<?> update(@RequestBody Users data){
         try {
-            final Users users = usersRepository.findById(data.getId()).orElseThrow(NotFoundUserException::new);
+            final Users users = usersRepository.findById(data.id).orElseThrow(NotFoundUserException::new);
             if (users != null) {
                 usersRepository.save(data);
                 return ResponseEntity.ok(data);
@@ -79,9 +75,7 @@ public class UsersResource {
             throw new NotFoundUserException();
         } catch (NotFoundUserException e) {
             logger.error("User not found", e);
-            Map<String, String> body = new HashMap<>();
-            body.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+            return Responses.exception(e);
         }
     }
 
@@ -98,9 +92,7 @@ public class UsersResource {
             throw new NotFoundUserException();
         } catch (NotFoundUserException e) {
             logger.error("User not found", e);
-            Map<String, String> body = new HashMap<>();
-            body.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+            return Responses.exception(e);
         }
     }
 

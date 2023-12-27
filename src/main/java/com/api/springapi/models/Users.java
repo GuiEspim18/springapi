@@ -1,8 +1,8 @@
 package com.api.springapi.models;
 
 import jakarta.persistence.*;
+import org.mindrot.jbcrypt.BCrypt;
 
-import java.text.MessageFormat;
 
 @Entity
 @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", allocationSize = 1)
@@ -10,49 +10,36 @@ public class Users {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_sequence")
-    private long id;
+    public long id;
 
-    private String name;
+    public String name;
 
-    private String email;
+    public String email;
 
     private String password;
 
-    public long getId() {
-        return id;
-    }
+    public Users () { }
 
-    public void setId(long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
+    public Users(String name, String email, String password) {
         this.name = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
         this.email = email;
-    }
-
-    public String getPassword() {
-        return password;
+        this.password = password;
     }
 
     public void setPassword(String password) {
-        this.password = password;
+        final String hash = BCrypt.hashpw(password, BCrypt.gensalt());
+        this.password = hash;
+    }
+
+    public boolean validate(String attempt) {
+        final boolean compare =  BCrypt.checkpw(attempt, password);
+        return compare;
     }
 
     @Override
     public String toString () {
-        return "Users { name: \"" + name +
+        return "Users { id: " + id +
+                " name: \"" + name +
                 "\", email: \"" + email +
                 "\", password: \"" + password + "\" }";
     }

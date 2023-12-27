@@ -2,8 +2,10 @@ package com.api.springapi.resources;
 
 import com.api.springapi.exceptions.IncorrectPasswordException;
 import com.api.springapi.exceptions.NotFoundUserException;
+import com.api.springapi.models.Login;
 import com.api.springapi.models.Users;
 import com.api.springapi.repository.UsersRepository;
+import com.api.springapi.utils.Responses;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -29,30 +31,28 @@ public class AuthResource {
     UsersRepository usersRepository;
 
     @PostMapping(value = "/login")
-    public ResponseEntity<?> login(@RequestBody Users data) {
+    public ResponseEntity<?> login(@RequestBody Login data) {
         try {
-            final Users found = usersRepository.findByEmail(data.getEmail());
+            final Users found = usersRepository.findByEmail(data.email);
             if (found == null) {
                 throw new NotFoundUserException();
             }
-            if (!BCrypt.checkpw(data.getPassword(), found.getPassword())) {
+            final boolean validPw = found.validate(data.password);
+            if (!validPw) {
                 throw new IncorrectPasswordException();
             }
             Map<String, String> response = new HashMap<>();
-            response.put("name", found.getName());
-            response.put("email", found.getEmail());
+            response.put("name", found.name);
+            response.put("email", found.email);
             return ResponseEntity.ok(response);
         } catch (NotFoundUserException e) {
             logger.error("User not found");
-            Map<String, String> body = new HashMap<>();
-            body.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+            return Responses.exception(e);
         } catch (IncorrectPasswordException e) {
             logger.error("Incorrect password");
-            Map<String, String> body = new HashMap<>();
-            body.put("error", e.getMessage());
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(body);
+            return Responses.exception(e);
         }
     }
+
 
 }
