@@ -3,6 +3,9 @@ package com.api.springapi.models;
 import jakarta.persistence.*;
 import org.mindrot.jbcrypt.BCrypt;
 
+import java.util.ArrayList;
+import java.util.List;
+
 
 @Entity
 @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", allocationSize = 1)
@@ -17,6 +20,9 @@ public class Users {
     public String email;
 
     private String password;
+
+    @OneToMany(mappedBy="user", cascade= CascadeType.ALL, orphanRemoval= true)
+    public List<Posts> posts = new ArrayList<>();
 
     public Users () { }
 
