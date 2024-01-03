@@ -2,15 +2,15 @@ package com.api.springapi.dto;
 
 public class PostsDTO {
     public long id;
-    public String message;
+    public String text;
     public long user;
 
     public PostsDTO() {
     }
 
-    public PostsDTO(long id, String message, long user) {
+    public PostsDTO(long id, String text, long user) {
         this.id = id;
-        this.message = message;
+        this.text = text;
         this.user = user;
     }
 }

@@ -22,7 +22,7 @@ public class Users {
 
     private String password;
 
-    @OneToMany(mappedBy = "user", fetch= FetchType.LAZY, cascade= CascadeType.ALL)
+    @OneToMany(mappedBy = "user", cascade= CascadeType.ALL)
     public List<Posts> posts;
 
     public Users () {

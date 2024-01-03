@@ -1,8 +1,6 @@
 package com.api.springapi.resources;
 
 
-import com.api.springapi.dto.GetPostDTO;
-import com.api.springapi.dto.GetUserDTO;
 import com.api.springapi.dto.PostsDTO;
 import com.api.springapi.exceptions.NotFoundPostException;
 import com.api.springapi.exceptions.NotFoundUserException;
@@ -17,9 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping(value="/posts")
@@ -59,7 +55,7 @@ public class PostsResources {
     public ResponseEntity<?> create(@RequestBody PostsDTO data) {
         try {
             final Users user = usersRepository.findById(data.user).orElseThrow(NotFoundUserException::new);
-            final Posts post = new Posts(data.message, user);
+            final Posts post = new Posts(data.text, user);
             postsRepository.save(post);
             return ResponseEntity.ok(post);
         } catch (Exception e) {
