@@ -1,14 +1,15 @@
 package com.api.springapi.models;
 
+import com.fasterxml.jackson.annotation.*;
 import jakarta.persistence.*;
 import org.mindrot.jbcrypt.BCrypt;
 
-import java.util.ArrayList;
 import java.util.List;
 
 
 @Entity
 @SequenceGenerator(name = "user_sequence", sequenceName = "user_sequence", allocationSize = 1)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Users {
 
     @Id
@@ -21,10 +22,11 @@ public class Users {
 
     private String password;
 
-    @OneToMany(mappedBy="user")
-    public List<Posts> posts = new ArrayList<>();
+    @OneToMany(mappedBy = "user", fetch= FetchType.LAZY, cascade= CascadeType.ALL)
+    public List<Posts> posts;
 
-    public Users () { }
+    public Users () {
+    }
 
     public Users(String name, String email, String password, List<Posts> posts) {
         this.name = name;
@@ -41,13 +43,5 @@ public class Users {
     public boolean validate(String attempt) {
         final boolean compare =  BCrypt.checkpw(attempt, password);
         return compare;
-    }
-
-    @Override
-    public String toString () {
-        return "Users { id: " + id +
-                " name: \"" + name +
-                "\", email: \"" + email +
-                "\", password: \"" + password + "\" }";
     }
 }

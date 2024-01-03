@@ -1,6 +1,8 @@
 package com.api.springapi.resources;
 
 
+import com.api.springapi.dto.GetPostDTO;
+import com.api.springapi.dto.GetUserDTO;
 import com.api.springapi.dto.PostsDTO;
 import com.api.springapi.exceptions.NotFoundPostException;
 import com.api.springapi.exceptions.NotFoundUserException;
@@ -15,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value="/posts")
@@ -24,10 +28,10 @@ public class PostsResources {
     private static final Logger logger = LoggerFactory.getLogger(PostsResources.class);
 
     @Autowired
-    private PostsRepository postsRepository;
+    PostsRepository postsRepository;
 
     @Autowired
-    private UsersRepository usersRepository;
+    UsersRepository usersRepository;
 
     @GetMapping
     public ResponseEntity<?> getAll() {
@@ -57,9 +61,7 @@ public class PostsResources {
             final Users user = usersRepository.findById(data.user).orElseThrow(NotFoundUserException::new);
             final Posts post = new Posts(data.message, user);
             postsRepository.save(post);
-            user.posts.add(post); // O erro dá nessa linha
-            usersRepository.save(user);
-            return ResponseEntity.ok(user);
+            return ResponseEntity.ok(post);
         } catch (Exception e) {
             logger.error("Cannot post", e);
             return Responses.exception(e);
