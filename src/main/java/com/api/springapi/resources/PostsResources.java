@@ -2,8 +2,11 @@ package com.api.springapi.resources;
 
 
 import com.api.springapi.exceptions.NotFoundPostException;
+import com.api.springapi.exceptions.NotFoundUserException;
 import com.api.springapi.models.Posts;
+import com.api.springapi.models.Users;
 import com.api.springapi.repository.PostsRepository;
+import com.api.springapi.repository.UsersRepository;
 import com.api.springapi.utils.Responses;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,6 +24,9 @@ public class PostsResources {
 
     @Autowired
     PostsRepository postsRepository;
+
+    @Autowired
+    private UsersRepository userRepository;
 
     @GetMapping
     public ResponseEntity<?> getAll() {
@@ -47,12 +53,20 @@ public class PostsResources {
     @PostMapping
     public ResponseEntity<?> create(@RequestBody Posts data) {
         try {
-            postsRepository.save(data);
-            return ResponseEntity.ok(data);
+            final Users found = userRepository.findById(data.user.id).orElseThrow(NotFoundUserException::new);
+            data.user = found;
+//            postsRepository.save(data);
+//            found.posts.add(data);
+            return ResponseEntity.ok(found);
         } catch (Exception e) {
             logger.error("Cannot post", e);
             return Responses.exception(e);
         }
+    }
+
+    @PutMapping
+    public ResponseEntity<?> update(@RequestBody Posts data) {
+        return ResponseEntity.ok("Hello World");
     }
 
 }

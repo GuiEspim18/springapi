@@ -14,7 +14,7 @@ public class Posts {
     public String message;
 
     @ManyToOne
-    @JoinColumn(name="user_id")
+    @JoinColumn(name="users")
     public Users user;
 
     public Posts () {
