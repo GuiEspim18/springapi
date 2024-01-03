@@ -15,7 +15,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(value="/posts")
@@ -58,15 +60,41 @@ public class PostsResources {
             final Posts post = new Posts(data.text, user);
             postsRepository.save(post);
             return ResponseEntity.ok(post);
-        } catch (Exception e) {
+        } catch (NotFoundUserException e) {
             logger.error("Cannot post", e);
             return Responses.exception(e);
         }
     }
 
     @PutMapping
-    public ResponseEntity<?> update(@RequestBody Posts data) {
-        return ResponseEntity.ok("Hello World");
+    public ResponseEntity<?> update(@RequestBody PostsDTO data) {
+        try {
+            final Users user = usersRepository.findById(data.user).orElseThrow(NotFoundUserException::new);
+            final Posts post = new Posts(data.text, user);
+            post.id = data.id;
+            postsRepository.save(post);
+            return ResponseEntity.ok(data);
+        } catch (NotFoundUserException e) {
+            logger.error("Post not found", e);
+            return Responses.exception(e);
+        }
+    }
+
+    @DeleteMapping(value="/{id}")
+    public ResponseEntity<?> delete(@PathVariable("id") long id) {
+        try {
+            final Posts post = postsRepository.findById(id).orElseThrow(NotFoundPostException::new);
+            if (post != null) {
+                postsRepository.deleteById(id);
+                Map<String, Boolean> body = new HashMap<>();
+                body.put("status", true);
+                return ResponseEntity.ok(body);
+            }
+            throw new NotFoundPostException();
+        } catch (NotFoundPostException e) {
+            logger.error("Fail to delete", e);
+            return Responses.exception(e);
+        }
     }
 
 }
