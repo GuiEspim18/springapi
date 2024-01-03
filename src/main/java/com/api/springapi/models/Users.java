@@ -26,10 +26,11 @@ public class Users {
 
     public Users () { }
 
-    public Users(String name, String email, String password) {
+    public Users(String name, String email, String password, List<Posts> posts) {
         this.name = name;
         this.email = email;
         this.password = password;
+        this.posts = posts;
     }
 
     public void setPassword(String password) {

@@ -2,13 +2,11 @@ package com.api.springapi.resources;
 
 import com.api.springapi.exceptions.IncorrectPasswordException;
 import com.api.springapi.exceptions.NotFoundUserException;
-import com.api.springapi.models.Login;
+import com.api.springapi.dto.LoginDTO;
 import com.api.springapi.models.Users;
 import com.api.springapi.repository.UsersRepository;
 import com.api.springapi.utils.Responses;
-import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -31,7 +29,7 @@ public class AuthResource {
     UsersRepository usersRepository;
 
     @PostMapping(value = "/login")
-    public ResponseEntity<?> login(@RequestBody Login data) {
+    public ResponseEntity<?> login(@RequestBody LoginDTO data) {
         try {
             final Users found = usersRepository.findByEmail(data.email);
             if (found == null) {

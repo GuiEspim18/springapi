@@ -9,6 +9,7 @@ spring.datasource.url=jdbc:postgresql://localhost:5432/your_path</br>
 spring.datasource.username=your_user</br>
 spring.datasource.password=your_pass</br>
 spring.jpa.hibernate.ddl-auto=update</br>
+spring.main.banner-mode=off</br>
 # if you need to run the server in another port use this code bellow </br>
 # server.port= YOUR_PORT 
 </p>
