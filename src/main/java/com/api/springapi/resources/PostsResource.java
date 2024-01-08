@@ -22,9 +22,9 @@ import java.util.Map;
 
 @RestController
 @RequestMapping(value="/posts")
-public class PostsResources {
+public class PostsResource {
 
-    private static final Logger logger = LoggerFactory.getLogger(PostsResources.class);
+    private static final Logger logger = LoggerFactory.getLogger(PostsResource.class);
 
     @Autowired
     PostsRepository postsRepository;

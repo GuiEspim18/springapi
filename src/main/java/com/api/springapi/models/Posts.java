@@ -33,5 +33,4 @@ public class Posts {
         this.user = user;
         this.likes = likes;
     }
-
 }

@@ -1,24 +1,28 @@
 package com.api.springapi.models;
 
+import com.fasterxml.jackson.annotation.JsonIdentityInfo;
 import com.fasterxml.jackson.annotation.JsonIdentityReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.ObjectIdGenerators;
 import jakarta.persistence.*;
 
 @Entity
 @SequenceGenerator(name="likes_sequence", sequenceName="likes_sequence", allocationSize=1)
+@JsonIdentityInfo(generator = ObjectIdGenerators.PropertyGenerator.class, property = "id")
 public class Likes {
 
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator="likes_sequence")
     public long id;
 
-    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
     @JoinColumn(name="user_id")
+    @JsonIdentityReference(alwaysAsId = true)
     public Users user;
 
-    @JsonIdentityReference(alwaysAsId = true)
     @ManyToOne
     @JoinColumn(name="post_id")
+    @JsonIgnore
     public Posts post;
 
 
