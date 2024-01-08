@@ -1,7 +1,6 @@
 package com.api.springapi.resources;
 
 import com.api.springapi.dto.LikesDTO;
-import com.api.springapi.exceptions.NotFoundLikesException;
 import com.api.springapi.exceptions.NotFoundPostException;
 import com.api.springapi.exceptions.NotFoundUserException;
 import com.api.springapi.models.Likes;

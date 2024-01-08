@@ -1,7 +1,5 @@
 package com.api.springapi.dto;
 
-import com.api.springapi.models.Users;
-
 public class LikesDTO {
 
     public long id;
