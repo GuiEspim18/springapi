@@ -4,10 +4,11 @@ import com.fasterxml.jackson.annotation.JsonIdentityReference;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 
+import java.util.List;
+
 
 @Entity
 @SequenceGenerator(name="post_sequence", sequenceName="post_sequence", allocationSize=1)
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Posts {
 
     @Id
@@ -21,12 +22,16 @@ public class Posts {
     @JoinColumn(name="user_id")
     public Users user;
 
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL)
+    public List<Likes> likes;
+
     public Posts () {
     }
 
-    public Posts (String text, Users user) {
+    public Posts (String text, Users user, List<Likes> likes) {
         this.text = text;
         this.user = user;
+        this.likes = likes;
     }
 
 }

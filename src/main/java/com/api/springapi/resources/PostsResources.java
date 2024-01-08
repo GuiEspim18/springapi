@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -57,7 +58,7 @@ public class PostsResources {
     public ResponseEntity<?> create(@RequestBody PostsDTO data) {
         try {
             final Users user = usersRepository.findById(data.user).orElseThrow(NotFoundUserException::new);
-            final Posts post = new Posts(data.text, user);
+            final Posts post = new Posts(data.text, user, new ArrayList<>());
             postsRepository.save(post);
             return ResponseEntity.ok(post);
         } catch (NotFoundUserException e) {
@@ -69,12 +70,11 @@ public class PostsResources {
     @PutMapping
     public ResponseEntity<?> update(@RequestBody PostsDTO data) {
         try {
-            final Users user = usersRepository.findById(data.user).orElseThrow(NotFoundUserException::new);
-            final Posts post = new Posts(data.text, user);
-            post.id = data.id;
+            final Posts post  = postsRepository.findById(data.id).orElseThrow(NotFoundPostException::new);
+            post.text = data.text;
             postsRepository.save(post);
             return ResponseEntity.ok(data);
-        } catch (NotFoundUserException e) {
+        } catch ( NotFoundPostException e) {
             logger.error("Post not found", e);
             return Responses.exception(e);
         }

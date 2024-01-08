@@ -25,14 +25,18 @@ public class Users {
     @OneToMany(mappedBy = "user", cascade= CascadeType.ALL)
     public List<Posts> posts;
 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL)
+    public List<Likes> likes;
+
     public Users () {
     }
 
-    public Users(String name, String email, String password, List<Posts> posts) {
+    public Users(String name, String email, String password, List<Posts> posts, List<Likes> likes) {
         this.name = name;
         this.email = email;
         this.password = password;
         this.posts = posts;
+        this.likes = likes;
     }
 
     public void setPassword(String password) {
